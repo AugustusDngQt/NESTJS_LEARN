@@ -1,11 +1,11 @@
 export enum UserGender {
-  Male,
-  Female,
-  Other,
+  Male = 'Male',
+  Female = 'Female',
+  Other = 'Other',
 }
 
 export enum UserVerifyStatus {
-  Unverified,
-  Verified,
-  Banned,
+  Unverified = 'Unverified',
+  Verified = 'Verified',
+  Banned = 'Banned',
 }

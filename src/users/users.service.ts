@@ -6,7 +6,7 @@ import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import { UserMessage } from './constants/message.constant';
 import * as bcrypt from 'bcrypt';
-
+import ObjectId from 'mongoose';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
@@ -20,7 +20,6 @@ export class UsersService {
   async create(payload: CreateUserDto) {
     const hash = await this.getHashPassword(payload.password);
     const user = await this.userModel.create({ ...payload, password: hash });
-
     return {
       message: UserMessage.CREATE_USER_IS_SUCCESS,
       user,
@@ -31,8 +30,13 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    try {
+      if (!ObjectId.isValidObjectId(id)) return 'Id is invalid';
+      return await this.userModel.findOne({ _id: id });
+    } catch {
+      return 'Not found';
+    }
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
