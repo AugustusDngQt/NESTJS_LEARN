@@ -11,6 +11,10 @@ import ObjectId from 'mongoose';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
+  isValidPassword(password: string, hash: string) {
+    return bcrypt.compareSync(password, hash);
+  }
+
   async getHashPassword(password: string): Promise<string> {
     const saltOrRounds = 10;
     const hash = await bcrypt.hash(password, saltOrRounds);
@@ -37,6 +41,10 @@ export class UsersService {
     } catch {
       return 'Not found';
     }
+  }
+
+  async findOneByUsername(username: string) {
+    return await this.userModel.findOne({ email: username });
   }
 
   async update(body: UpdateUserDto) {
