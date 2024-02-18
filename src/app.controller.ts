@@ -9,6 +9,7 @@ import {
 import { AppService } from './app.service';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
+import { LocalAuthGuard } from './auth/local-auth.guard';
 
 @Controller()
 export class AppController {
@@ -22,7 +23,7 @@ export class AppController {
   getView() {
     console.log('>> Host: ', this.configService.get<string>('HOST'));
   }
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   async handleLogin(@Request() req: any) {
     return req.user;
