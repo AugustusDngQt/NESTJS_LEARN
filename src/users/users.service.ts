@@ -39,11 +39,32 @@ export class UsersService {
     }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(body: UpdateUserDto) {
+    try {
+      if (!ObjectId.isValidObjectId(body._id)) return 'Id is invalid';
+      return await this.userModel.findOneAndUpdate(
+        { _id: body._id },
+        {
+          $set: { ...body },
+          $currentDate: {
+            updated_at: true,
+          },
+        },
+        {
+          returnDocument: 'after',
+        },
+      );
+    } catch {
+      return 'Not found';
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    try {
+      if (!ObjectId.isValidObjectId(id)) return 'Id is invalid';
+      return await this.userModel.deleteOne({ _id: id });
+    } catch {
+      return 'Not found';
+    }
   }
 }
