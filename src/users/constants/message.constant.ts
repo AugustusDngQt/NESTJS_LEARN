@@ -18,4 +18,5 @@ export const UserMessage = {
     'Gender must be one of: Male, Female, Other',
   GENDER_IS_INVALID: 'Gender is invalid',
   DATE_OF_BIRTH_IS_INVALID: 'Date of birth is invalid',
+  TOKEN_IS_INVALID: 'Token is invalid',
 };

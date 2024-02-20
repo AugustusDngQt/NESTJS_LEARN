@@ -4,7 +4,7 @@ import { UserGender, UserVerifyStatus } from '../constants/enums.constant';
 
 export type UserDocument = HydratedDocument<User>;
 const date = new Date();
-@Schema()
+@Schema({ timestamps: true })
 export class User {
   @Prop({ required: true })
   name: string;

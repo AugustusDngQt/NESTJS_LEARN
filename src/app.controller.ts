@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { Public } from './decorators/is-public.decorator';
 
 @Controller()
 export class AppController {
@@ -25,13 +26,14 @@ export class AppController {
   getView() {
     console.log('>> Host: ', this.configService.get<string>('HOST'));
   }
+
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async handleLogin(@Request() req: any) {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req: any) {
     return req.user;
