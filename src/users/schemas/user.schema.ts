@@ -1,9 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { UserGender, UserVerifyStatus } from '../constants/enums.constant';
+import { UserVerifyStatus } from '../constants/enums.constant';
 
 export type UserDocument = HydratedDocument<User>;
-const date = new Date();
 @Schema({ timestamps: true })
 export class User {
   @Prop({ required: true })
@@ -36,11 +35,11 @@ export class User {
   @Prop({ default: UserVerifyStatus.Unverified })
   verify_status: UserVerifyStatus;
 
-  @Prop({ default: date })
-  created_at: Date;
+  @Prop()
+  isDeleted: boolean;
 
-  @Prop({ default: date })
-  updated_at: Date;
+  @Prop()
+  deletedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -4,18 +4,18 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { HttpExceptionFilter } from './filters/http-exception.filter';
-import { AllExceptionsFilter } from './filters/all-exception.filter';
-import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { AuthModule } from './auth/auth.module';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 
 @Module({
   imports: [
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URL'),
+        connectionFactory: (conection) => {
+          conection.plugin(softDeletePlugin);
+          return conection;
+        },
       }),
       inject: [ConfigService],
     }),

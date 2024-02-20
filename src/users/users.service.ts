@@ -2,14 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
+import { User, UserDocument } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import { UserMessage } from './constants/message.constant';
 import * as bcrypt from 'bcrypt';
 import ObjectId from 'mongoose';
+import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>,
+  ) {}
 
   isValidPassword(password: string, hash: string) {
     return bcrypt.compareSync(password, hash);
@@ -54,9 +57,6 @@ export class UsersService {
         { _id: body._id },
         {
           $set: { ...body },
-          $currentDate: {
-            updated_at: true,
-          },
         },
         {
           returnDocument: 'after',
@@ -70,7 +70,7 @@ export class UsersService {
   async remove(id: string) {
     try {
       if (!ObjectId.isValidObjectId(id)) return 'Id is invalid';
-      return await this.userModel.deleteOne({ _id: id });
+      return await this.userModel.softDelete({ _id: id });
     } catch {
       return 'Not found';
     }
