@@ -17,8 +17,8 @@ export class CompaniesService {
     return await this.companymodel.create(createCompanyDto);
   }
 
-  findAll() {
-    return `This action returns all companies`;
+  async findAll() {
+    return await this.companymodel.find().exec();
   }
 
   async findOne(id: string) {
@@ -37,7 +37,9 @@ export class CompaniesService {
     );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
+  async remove(id: string) {
+    if (!isValidObjectId(id))
+      throw new BadRequestException(CompanyMessage.ID_IS_INVALID);
+    return await this.companymodel.deleteOne({ _id: id });
   }
 }

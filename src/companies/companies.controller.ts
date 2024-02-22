@@ -7,11 +7,14 @@ import {
   Param,
   Delete,
   NotFoundException,
+  Injectable,
 } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { CompanyMessage } from 'src/constants/message.constant';
+import { Model } from 'mongoose';
+import { Company } from './schemas/company.schema';
 
 @Controller('companies')
 export class CompaniesController {
@@ -23,8 +26,8 @@ export class CompaniesController {
   }
 
   @Get()
-  findAll() {
-    return this.companiesService.findAll();
+  async findAll() {
+    return await this.companiesService.findAll();
   }
 
   @Get(':id')
@@ -46,7 +49,7 @@ export class CompaniesController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.companiesService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.companiesService.remove(id);
   }
 }
