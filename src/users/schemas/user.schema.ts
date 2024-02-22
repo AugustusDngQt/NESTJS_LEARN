@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { UserVerifyStatus } from '../constants/enums.constant';
+import { UserVerifyStatus } from '../../constants/enums.constant';
+import { UserActionDto } from 'src/common/dto/user-action.dto';
 
 export type UserDocument = HydratedDocument<User>;
 @Schema({ timestamps: true })
@@ -34,6 +35,15 @@ export class User {
 
   @Prop({ default: UserVerifyStatus.Unverified })
   verify_status: UserVerifyStatus;
+
+  @Prop()
+  createdBy: UserActionDto;
+
+  @Prop()
+  updatedBy: UserActionDto;
+
+  @Prop()
+  deletedBy: UserActionDto;
 
   @Prop()
   isDeleted: boolean;

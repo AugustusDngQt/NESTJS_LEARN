@@ -27,9 +27,9 @@ export class AppController {
     console.log('>> Host: ', this.configService.get<string>('HOST'));
   }
 
+  @Post('login')
   @Public()
   @UseGuards(LocalAuthGuard)
-  @Post('login')
   async handleLogin(@Request() req: any) {
     return this.authService.login(req.user);
   }

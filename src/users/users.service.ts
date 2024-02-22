@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { Model } from 'mongoose';
-import { UserMessage } from './constants/message.constant';
+import { CompanyMessage, UserMessage } from '../constants/message.constant';
 import * as bcrypt from 'bcrypt';
 import ObjectId from 'mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
@@ -26,6 +26,7 @@ export class UsersService {
 
   async create(payload: CreateUserDto) {
     const hash = await this.getHashPassword(payload.password);
+
     const user = await this.userModel.create({ ...payload, password: hash });
     return {
       message: UserMessage.CREATE_USER_IS_SUCCESS,
@@ -39,7 +40,8 @@ export class UsersService {
 
   async findOne(id: string) {
     try {
-      if (!ObjectId.isValidObjectId(id)) return 'Id is invalid';
+      if (!ObjectId.isValidObjectId(id))
+        throw new BadRequestException(CompanyMessage.ID_IS_INVALID);
       return await this.userModel.findOne({ _id: id });
     } catch {
       return 'Not found';

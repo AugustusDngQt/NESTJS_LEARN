@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from 'src/decorators/is-public.decorator';
+import { UserMessage } from 'src/constants/message.constant';
 
 @Controller('users')
 export class UsersController {
@@ -29,7 +31,9 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return await this.usersService.findOne(id);
+    const user = await this.usersService.findOne(id);
+    if (!user) throw new NotFoundException(UserMessage.USER_NOT_FOUND);
+    return user;
   }
 
   @Patch()

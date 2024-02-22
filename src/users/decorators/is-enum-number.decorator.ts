@@ -5,8 +5,8 @@ import {
   isEnum,
 } from 'class-validator';
 import { getArrayNumberEnum } from '../utils/others.util';
-import { UserGender } from '../constants/enums.constant';
-import { UserMessage } from '../constants/message.constant';
+import { UserGender } from '../../constants/enums.constant';
+import { UserMessage } from '../../constants/message.constant';
 
 export function IsEnumNumber(
   enumType: Object,

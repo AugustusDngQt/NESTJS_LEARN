@@ -1,20 +1,15 @@
-import { UserGender } from '../constants/enums.constant';
+import { UserGender } from '../../constants/enums.constant';
 import {
   IsEmail,
   IsEnum,
   IsISO8601,
-  IsIn,
-  IsInt,
-  IsNumber,
-  IsNumberString,
+  IsOptional,
   IsPhoneNumber,
   IsString,
   Length,
 } from 'class-validator';
-import { UserMessage } from '../constants/message.constant';
+import { UserMessage } from '../../constants/message.constant';
 import { PasswordMatch } from '../decorators/password-match.decorator';
-import { IsEnumNumber } from '../decorators/is-enum-number.decorator';
-import { getArrayNumberEnum } from '../utils/others.util';
 
 export class CreateUserDto {
   @IsString({
