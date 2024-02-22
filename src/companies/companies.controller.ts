@@ -15,14 +15,19 @@ import { UpdateCompanyDto } from './dto/update-company.dto';
 import { CompanyMessage } from 'src/constants/message.constant';
 import { Model } from 'mongoose';
 import { Company } from './schemas/company.schema';
+import { User } from 'src/decorators/user.decorator';
+import { IUser } from 'src/users/users.interface';
 
 @Controller('companies')
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
-  async create(@Body() createCompanyDto: CreateCompanyDto) {
-    return await this.companiesService.create(createCompanyDto);
+  async create(
+    @Body() createCompanyDto: CreateCompanyDto,
+    @User() user: IUser,
+  ) {
+    return await this.companiesService.create(createCompanyDto, user);
   }
 
   @Get()
@@ -38,8 +43,14 @@ export class CompaniesController {
   }
 
   @Patch()
-  async update(@Body() updateCompanyDto: UpdateCompanyDto) {
-    const company_update = await this.companiesService.update(updateCompanyDto);
+  async update(
+    @Body() updateCompanyDto: UpdateCompanyDto,
+    @User() user: IUser,
+  ) {
+    const company_update = await this.companiesService.update(
+      updateCompanyDto,
+      user,
+    );
     if (!company_update)
       throw new NotFoundException(CompanyMessage.COMPANY_NOT_FOUND);
     return {
@@ -49,7 +60,10 @@ export class CompaniesController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.companiesService.remove(id);
+  async remove(@Param('id') id: string, @User() user: IUser) {
+    const { deleted } = await this.companiesService.remove(id, user);
+    if (deleted < 1)
+      throw new NotFoundException(CompanyMessage.COMPANY_NOT_FOUND);
+    return { message: CompanyMessage.DELETE_COMPANY_IS_SUCCESS };
   }
 }

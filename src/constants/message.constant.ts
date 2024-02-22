@@ -18,13 +18,14 @@ export const UserMessage = {
     'Gender must be one of: Male, Female, Other',
   GENDER_IS_INVALID: 'Gender is invalid',
   DATE_OF_BIRTH_IS_INVALID: 'Date of birth is invalid',
-  TOKEN_IS_INVALID: 'Token is invalid',
+  TOKEN_IS_INVALID_OR_NOT_FOUND: 'Token is invalid or not found',
   USER_ID_OF_USER_MUST_BE_STRING: 'User id of user must be string',
   USER_ID_IS_NOT_EMPTY: 'User id is not empty',
   EMAIL_IS_NOT_EMPTY: 'Email is not empty',
   USERS_CAN_CHANGE_THEIR_PASSWORD_EXCLUSIVELY_THROUGH_THE_PASSWORD_CHANGE_FEATURE:
     'Users can change their password exclusively through the password change feature',
   USER_NOT_FOUND: 'User not found',
+  USERNAME_OR_PASSWORD_IS_INVALID: 'Username or password is invalid',
 };
 
 export const CompanyMessage = {
@@ -41,4 +42,6 @@ export const CompanyMessage = {
   ID_IS_INVALID: 'Id is invalid',
   COMPANY_NOT_FOUND: 'Company not found',
   UPDATE_COMPANY_IS_SUCCESS: 'Update company is success',
+  CREATE_COMPANY_IS_SUCCESS: 'Create company is success',
+  DELETE_COMPANY_IS_SUCCESS: 'Delete company is success',
 };
