@@ -1,12 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
-import { Model } from 'mongoose';
 import { CompanyMessage, UserMessage } from '../constants/message.constant';
 import * as bcrypt from 'bcrypt';
-import ObjectId from 'mongoose';
+import ObjectId, { isValidObjectId } from 'mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 @Injectable()
 export class UsersService {
@@ -29,8 +32,7 @@ export class UsersService {
 
     const user = await this.userModel.create({ ...payload, password: hash });
     return {
-      message: UserMessage.CREATE_USER_IS_SUCCESS,
-      user,
+      result: user,
     };
   }
 
@@ -42,7 +44,7 @@ export class UsersService {
     try {
       if (!ObjectId.isValidObjectId(id))
         throw new BadRequestException(CompanyMessage.ID_IS_INVALID);
-      return await this.userModel.findOne({ _id: id });
+      return { result: await this.userModel.findOne({ _id: id }) };
     } catch {
       return 'Not found';
     }
@@ -55,15 +57,17 @@ export class UsersService {
   async update(body: UpdateUserDto) {
     try {
       if (!ObjectId.isValidObjectId(body._id)) return 'Id is invalid';
-      return await this.userModel.findOneAndUpdate(
-        { _id: body._id },
-        {
-          $set: { ...body },
-        },
-        {
-          returnDocument: 'after',
-        },
-      );
+      return {
+        result: await this.userModel.findOneAndUpdate(
+          { _id: body._id },
+          {
+            $set: { ...body },
+          },
+          {
+            returnDocument: 'after',
+          },
+        ),
+      };
     } catch {
       return 'Not found';
     }
@@ -71,10 +75,13 @@ export class UsersService {
 
   async remove(id: string) {
     try {
-      if (!ObjectId.isValidObjectId(id)) return 'Id is invalid';
-      return await this.userModel.softDelete({ _id: id });
+      if (!isValidObjectId(id)) return 'Id is invalid';
+      const result = await this.userModel.softDelete({ _id: id });
+      if (result.deleted < 1)
+        throw new NotFoundException(UserMessage.USER_NOT_FOUND);
+      return { result: true };
     } catch {
-      return 'Not found';
+      return UserMessage.USER_NOT_FOUND;
     }
   }
 }

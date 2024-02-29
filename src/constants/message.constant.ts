@@ -26,6 +26,9 @@ export const UserMessage = {
     'Users can change their password exclusively through the password change feature',
   USER_NOT_FOUND: 'User not found',
   USERNAME_OR_PASSWORD_IS_INVALID: 'Username or password is invalid',
+  LOGIN_IS_SUCCESS: 'Login is success',
+  UPDATE_USER_IS_SUCCESS: 'Update user is success',
+  DELETE_USER_IS_SUCCESS: 'Delete user is success',
 };
 
 export const CompanyMessage = {

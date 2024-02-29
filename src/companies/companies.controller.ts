@@ -7,15 +7,13 @@ import {
   Param,
   Delete,
   NotFoundException,
-  Injectable,
+  Query,
 } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { CompanyMessage } from 'src/constants/message.constant';
-import { Model } from 'mongoose';
-import { Company } from './schemas/company.schema';
-import { User } from 'src/decorators/user.decorator';
+import { ResponseMessage, User } from 'src/decorators/customize.decorator';
 import { IUser } from 'src/users/users.interface';
 
 @Controller('companies')
@@ -23,6 +21,7 @@ export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
+  @ResponseMessage(CompanyMessage.CREATE_COMPANY_IS_SUCCESS)
   async create(
     @Body() createCompanyDto: CreateCompanyDto,
     @User() user: IUser,
@@ -31,8 +30,12 @@ export class CompaniesController {
   }
 
   @Get()
-  async findAll() {
-    return await this.companiesService.findAll();
+  async findAll(
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+    @Query() qs: string,
+  ) {
+    return await this.companiesService.findAll(+page, +limit, qs);
   }
 
   @Get(':id')
@@ -43,6 +46,7 @@ export class CompaniesController {
   }
 
   @Patch()
+  @ResponseMessage(CompanyMessage.UPDATE_COMPANY_IS_SUCCESS)
   async update(
     @Body() updateCompanyDto: UpdateCompanyDto,
     @User() user: IUser,
@@ -60,10 +64,8 @@ export class CompaniesController {
   }
 
   @Delete(':id')
+  @ResponseMessage(CompanyMessage.DELETE_COMPANY_IS_SUCCESS)
   async remove(@Param('id') id: string, @User() user: IUser) {
-    const { deleted } = await this.companiesService.remove(id, user);
-    if (deleted < 1)
-      throw new NotFoundException(CompanyMessage.COMPANY_NOT_FOUND);
-    return { message: CompanyMessage.DELETE_COMPANY_IS_SUCCESS };
+    return await this.companiesService.remove(id, user);
   }
 }
