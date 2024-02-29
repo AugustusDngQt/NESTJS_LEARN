@@ -10,13 +10,13 @@ export class User {
   name: string;
 
   @Prop({ required: true })
-  date_of_birth: Date;
+  dateOfBirth: Date;
 
   @Prop({ required: true, unique: true })
   email: string;
 
   @Prop()
-  phone: string;
+  phoneNumber: string;
 
   @Prop({ required: true })
   password: string;
@@ -31,13 +31,13 @@ export class User {
   gender: string;
 
   @Prop()
-  forgot_password_token: string;
+  forgotPasswordToken: string;
 
   @Prop()
-  verify_email_token: string;
+  verifyEmailToken: string;
 
   @Prop({ default: UserVerifyStatus.Unverified })
-  verify_status: UserVerifyStatus;
+  verifyStatus: UserVerifyStatus;
 
   @Prop({ type: Object })
   createdBy: UserActionDto;
@@ -53,6 +53,12 @@ export class User {
 
   @Prop()
   deletedAt: Date;
+
+  @Prop()
+  createdAt: Date;
+
+  @Prop()
+  updatedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

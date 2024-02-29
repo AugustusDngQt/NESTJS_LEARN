@@ -34,6 +34,10 @@ export const UserMessage = {
   COMPANY_ID_IS_INVALID: 'Company id is invalid',
   COMPANY_NAME_MUST_BE_STRING: 'Company name must be string',
   ID_COMPANY_IS_NOT_EMPTY: 'Id company is not empty',
+  REGISTER_USER_IS_SUCCESS: 'Register user is success',
+  EMAIL_IS_ALREADY_EXISTS: 'Email is already exists',
+  PASSWORD_IS_NOT_STRONG_ENOUGH:
+    'The password must be at least 8 characters long and contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol',
 };
 
 export const CompanyMessage = {

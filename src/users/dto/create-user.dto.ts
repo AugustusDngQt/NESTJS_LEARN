@@ -5,11 +5,14 @@ import {
   IsISO8601,
   IsNotEmptyObject,
   IsObject,
-  IsOptional,
   IsPhoneNumber,
   IsString,
+  IsStrongPassword,
   Length,
+  Validate,
   ValidateNested,
+  ValidationError,
+  validate,
 } from 'class-validator';
 import { UserMessage } from '../../constants/message.constant';
 import { PasswordMatch } from '../decorators/password-match.decorator';
@@ -29,7 +32,7 @@ export class RegisterUserDto {
     { strict: true, strictSeparator: true },
     { message: UserMessage.DATE_OF_BIRTH_IS_INVALID },
   )
-  date_of_birth: Date;
+  dateOfBirth: Date;
 
   @IsEmail({}, { message: UserMessage.EMAIL_IS_INVALID })
   email: string;
@@ -38,7 +41,7 @@ export class RegisterUserDto {
     message:
       UserMessage.THE_PHONE_NUBER_MUST_BE_A_VALID_VIETNAMESE_PHONE_NUMBER,
   })
-  phone: string;
+  phoneNumber: string;
 
   @IsString({ message: UserMessage.PASSWORD_OF_USER_MUST_BE_STRING })
   password: string;
@@ -47,7 +50,7 @@ export class RegisterUserDto {
   @PasswordMatch('password', {
     message: UserMessage.CONFIRM_PASSWORD_MUST_BE_SAME_WITH_PASSWORD,
   })
-  confirm_password: string;
+  confirmPassword: string;
 
   @IsString({ message: UserMessage.ADDRESS_OF_USER_MUST_BE_STRING })
   @Length(20, 100, {
@@ -72,7 +75,7 @@ export class CreateUserDto {
     { strict: true, strictSeparator: true },
     { message: UserMessage.DATE_OF_BIRTH_IS_INVALID },
   )
-  date_of_birth: Date;
+  dateOfBirth: Date;
 
   @IsEmail({}, { message: UserMessage.EMAIL_IS_INVALID })
   email: string;
@@ -81,16 +84,28 @@ export class CreateUserDto {
     message:
       UserMessage.THE_PHONE_NUBER_MUST_BE_A_VALID_VIETNAMESE_PHONE_NUMBER,
   })
-  phone: string;
+  phoneNumber: string;
 
   @IsString({ message: UserMessage.PASSWORD_OF_USER_MUST_BE_STRING })
+  @IsStrongPassword(
+    {
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    },
+    {
+      message: UserMessage.PASSWORD_IS_NOT_STRONG_ENOUGH,
+    },
+  )
   password: string;
 
   @IsString({ message: UserMessage.CONFIRM_PASSWORD_MUST_BE_STRING })
   @PasswordMatch('password', {
     message: UserMessage.CONFIRM_PASSWORD_MUST_BE_SAME_WITH_PASSWORD,
   })
-  confirm_password: string;
+  confirmPassword: string;
 
   @IsString({ message: UserMessage.ADDRESS_OF_USER_MUST_BE_STRING })
   @Length(20, 100, {

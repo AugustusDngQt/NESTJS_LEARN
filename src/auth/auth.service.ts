@@ -1,11 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { InjectModel } from '@nestjs/mongoose';
+import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { UserMessage } from 'src/constants/message.constant';
+import { RegisterUserDto } from 'src/users/dto/create-user.dto';
+import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { IUser } from 'src/users/users.interface';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>,
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
@@ -44,5 +50,14 @@ export class AuthService {
         role,
       },
     };
+  }
+
+  async register(payload: RegisterUserDto) {
+    const hash = await this.usersService.getHashPassword(payload.password);
+
+    if (await this.userModel.findOne({ email: payload.email }))
+      throw new BadRequestException(UserMessage.EMAIL_IS_ALREADY_EXISTS);
+    const user = await this.userModel.create({ ...payload, password: hash });
+    return { result: { _id: user._id, createdAt: user.createdAt } };
   }
 }

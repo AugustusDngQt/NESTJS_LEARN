@@ -20,6 +20,7 @@ export class CompanyInfoDto {
     message: UserMessage.COMPANY_ID_IS_INVALID,
   })
   _id: mongoose.Schema.Types.ObjectId;
+
   @IsNotEmpty({ message: UserMessage.COMPANY_NAME_IS_NOT_EMPTY })
   @IsString({
     message: UserMessage.COMPANY_NAME_MUST_BE_STRING,

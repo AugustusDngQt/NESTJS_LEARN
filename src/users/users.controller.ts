@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   NotFoundException,
+  UseFilters,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,8 +22,8 @@ export class UsersController {
   @Public()
   @ResponseMessage(UserMessage.CREATE_USER_IS_SUCCESS)
   @Post()
-  create(@Body() body: CreateUserDto) {
-    return this.usersService.create(body);
+  async create(@Body() body: CreateUserDto) {
+    return await this.usersService.create(body);
   }
 
   @Get()

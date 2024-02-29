@@ -29,10 +29,11 @@ export class UsersService {
 
   async create(payload: CreateUserDto) {
     const hash = await this.getHashPassword(payload.password);
-
+    if (await this.userModel.findOne({ email: payload.email }))
+      throw new BadRequestException(UserMessage.EMAIL_IS_ALREADY_EXISTS);
     const user = await this.userModel.create({ ...payload, password: hash });
     return {
-      result: user,
+      result: { _id: user._id, createdAt: user.createdAt },
     };
   }
 
