@@ -5,12 +5,17 @@ import {
   IsEnum,
   IsISO8601,
   IsNotEmpty,
+  IsNotEmptyObject,
+  IsObject,
   IsOptional,
   IsPhoneNumber,
   IsString,
   Length,
+  ValidateNested,
 } from 'class-validator';
 import { UserMessage } from '../../constants/message.constant';
+import { CompanyInfoDto } from 'src/common/dto/user.dto';
+import { Type } from 'class-transformer';
 
 export class UpdateUserDto {
   @IsNotEmpty()
@@ -30,7 +35,7 @@ export class UpdateUserDto {
     { strict: true, strictSeparator: true },
     { message: UserMessage.DATE_OF_BIRTH_IS_INVALID },
   )
-  date_of_birth?: Date;
+  dateOfBirth?: Date;
 
   @IsOptional()
   @IsEmail({}, { message: UserMessage.EMAIL_IS_INVALID })
@@ -41,7 +46,7 @@ export class UpdateUserDto {
     message:
       UserMessage.THE_PHONE_NUBER_MUST_BE_A_VALID_VIETNAMESE_PHONE_NUMBER,
   })
-  phone?: string;
+  phoneNumber?: string;
 
   @IsOptional()
   @IsString({ message: UserMessage.ADDRESS_OF_USER_MUST_BE_STRING })
@@ -50,6 +55,8 @@ export class UpdateUserDto {
   })
   address?: string;
 
+  @IsOptional()
+  @IsString({ message: UserMessage.PASSWORD_OF_USER_MUST_BE_STRING })
   @IsEmpty({
     message:
       UserMessage.USERS_CAN_CHANGE_THEIR_PASSWORD_EXCLUSIVELY_THROUGH_THE_PASSWORD_CHANGE_FEATURE,
@@ -59,4 +66,11 @@ export class UpdateUserDto {
   @IsOptional()
   @IsEnum(UserGender)
   gender?: string;
+
+  @IsOptional()
+  @IsNotEmptyObject()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CompanyInfoDto)
+  company?: CompanyInfoDto;
 }

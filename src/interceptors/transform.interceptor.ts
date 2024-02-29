@@ -32,7 +32,7 @@ export class TransformInterceptor<T>
           '',
         data: {
           result: data.result,
-          meta: {}, // if this is supposed to be the actual return then replace {} with data.result
+          meta: data.meta ? data.meta : {}, // if this is supposed to be the actual return then replace {} with data.result
         },
       })),
     );

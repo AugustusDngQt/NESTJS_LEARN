@@ -9,10 +9,7 @@ import {
   IsString,
   IsStrongPassword,
   Length,
-  Validate,
   ValidateNested,
-  ValidationError,
-  validate,
 } from 'class-validator';
 import { UserMessage } from '../../constants/message.constant';
 import { PasswordMatch } from '../decorators/password-match.decorator';

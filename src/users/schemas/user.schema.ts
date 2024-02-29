@@ -39,6 +39,9 @@ export class User {
   @Prop({ default: UserVerifyStatus.Unverified })
   verifyStatus: UserVerifyStatus;
 
+  @Prop()
+  role: UserVerifyStatus;
+
   @Prop({ type: Object })
   createdBy: UserActionDto;
 

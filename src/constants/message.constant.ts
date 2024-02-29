@@ -38,6 +38,7 @@ export const UserMessage = {
   EMAIL_IS_ALREADY_EXISTS: 'Email is already exists',
   PASSWORD_IS_NOT_STRONG_ENOUGH:
     'The password must be at least 8 characters long and contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol',
+  ID_IS_INVALID: 'Id is invalid',
 };
 
 export const CompanyMessage = {

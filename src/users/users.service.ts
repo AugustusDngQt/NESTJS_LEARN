@@ -11,6 +11,9 @@ import { CompanyMessage, UserMessage } from '../constants/message.constant';
 import * as bcrypt from 'bcrypt';
 import ObjectId, { isValidObjectId } from 'mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { IUser } from './users.interface';
+import mongoose from 'mongoose';
+import aqp from 'api-query-params';
 @Injectable()
 export class UsersService {
   constructor(
@@ -27,25 +30,62 @@ export class UsersService {
     return hash;
   }
 
-  async create(payload: CreateUserDto) {
+  async create(payload: CreateUserDto, user: IUser) {
     const hash = await this.getHashPassword(payload.password);
     if (await this.userModel.findOne({ email: payload.email }))
       throw new BadRequestException(UserMessage.EMAIL_IS_ALREADY_EXISTS);
-    const user = await this.userModel.create({ ...payload, password: hash });
+    const result = await this.userModel.create({
+      ...payload,
+      password: hash,
+      role: 'ADMIN',
+      createdBy: {
+        userId: new mongoose.Types.ObjectId(user._id),
+        email: user.email,
+      },
+    });
     return {
-      result: { _id: user._id, createdAt: user.createdAt },
+      result: { _id: result._id, createdAt: result.createdAt },
     };
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(page: number, limit: number, qs: string) {
+    const { filter, projection, population } = aqp(qs);
+    delete filter.page;
+    delete filter.limit;
+
+    // eslint-disable-next-line prefer-const
+    let { sort }: any = aqp(qs);
+
+    const defaultLimit = limit ? limit : 10;
+    const offset = (page - 1) * defaultLimit;
+    const totalItems = (await this.userModel.find(filter)).length;
+    const totalPages = Math.ceil(totalItems / defaultLimit);
+
+    const result = await this.userModel
+      .find(filter, { password: 0 })
+      .skip(offset)
+      .limit(defaultLimit)
+      .sort(sort)
+      .populate(population)
+      .exec();
+    return {
+      meta: {
+        currentPage: page, //trang hiện tại
+        pageSize: defaultLimit, //số lượng bản ghi đã lấy
+        pages: totalPages, //tổng số trang với điều kiện query
+        total: totalItems, // tổng số phần tử (số bản ghi)
+      },
+      result, //kết quả query
+    };
   }
 
   async findOne(id: string) {
     try {
       if (!ObjectId.isValidObjectId(id))
         throw new BadRequestException(CompanyMessage.ID_IS_INVALID);
-      return { result: await this.userModel.findOne({ _id: id }) };
+      return {
+        result: await this.userModel.findOne({ _id: id }, { password: 0 }),
+      };
     } catch {
       return 'Not found';
     }
@@ -55,17 +95,21 @@ export class UsersService {
     return await this.userModel.findOne({ email: username });
   }
 
-  async update(body: UpdateUserDto) {
+  async update(body: UpdateUserDto, user: IUser) {
     try {
-      if (!ObjectId.isValidObjectId(body._id)) return 'Id is invalid';
+      if (!isValidObjectId(body._id))
+        throw new BadRequestException(UserMessage.ID_IS_INVALID);
       return {
-        result: await this.userModel.findOneAndUpdate(
+        result: await this.userModel.updateOne(
           { _id: body._id },
           {
-            $set: { ...body },
-          },
-          {
-            returnDocument: 'after',
+            $set: {
+              ...body,
+              updatedBy: {
+                userId: new mongoose.Types.ObjectId(user._id),
+                email: user.email,
+              },
+            },
           },
         ),
       };
@@ -74,13 +118,25 @@ export class UsersService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string, user: IUser) {
     try {
-      if (!isValidObjectId(id)) return 'Id is invalid';
+      if (!isValidObjectId(id))
+        throw new BadRequestException(UserMessage.ID_IS_INVALID);
+      await this.userModel.updateOne(
+        { _id: id },
+        {
+          $set: {
+            deletedBy: {
+              userId: new mongoose.Types.ObjectId(user._id),
+              email: user.email,
+            },
+          },
+        },
+      );
       const result = await this.userModel.softDelete({ _id: id });
       if (result.deleted < 1)
         throw new NotFoundException(UserMessage.USER_NOT_FOUND);
-      return { result: true };
+      return { result: { deleted: result.deleted } };
     } catch {
       return UserMessage.USER_NOT_FOUND;
     }

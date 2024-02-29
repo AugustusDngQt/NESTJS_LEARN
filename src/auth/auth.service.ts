@@ -57,7 +57,11 @@ export class AuthService {
 
     if (await this.userModel.findOne({ email: payload.email }))
       throw new BadRequestException(UserMessage.EMAIL_IS_ALREADY_EXISTS);
-    const user = await this.userModel.create({ ...payload, password: hash });
+    const user = await this.userModel.create({
+      ...payload,
+      password: hash,
+      role: 'USER',
+    });
     return { result: { _id: user._id, createdAt: user.createdAt } };
   }
 }
