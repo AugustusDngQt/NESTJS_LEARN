@@ -29,6 +29,11 @@ export const UserMessage = {
   LOGIN_IS_SUCCESS: 'Login is success',
   UPDATE_USER_IS_SUCCESS: 'Update user is success',
   DELETE_USER_IS_SUCCESS: 'Delete user is success',
+  COMPANY_ID_IS_NOT_EMPTY: 'Company id is not empty',
+  COMPANY_NAME_IS_NOT_EMPTY: 'Company name is not empty',
+  COMPANY_ID_IS_INVALID: 'Company id is invalid',
+  COMPANY_NAME_MUST_BE_STRING: 'Company name must be string',
+  ID_COMPANY_IS_NOT_EMPTY: 'Id company is not empty',
 };
 
 export const CompanyMessage = {
