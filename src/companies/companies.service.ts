@@ -31,8 +31,8 @@ export class CompaniesService {
 
   async findAll(page: number, limit: number, qs: string) {
     const { filter, projection, population } = aqp(qs);
-    delete filter.page;
-    delete filter.limit;
+    delete filter.current;
+    delete filter.pageSize;
 
     // eslint-disable-next-line prefer-const
     let { sort }: any = aqp(qs);

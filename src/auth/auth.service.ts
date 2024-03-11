@@ -38,28 +38,24 @@ export class AuthService {
   async login(user: IUser, res: Response) {
     const { _id, name, email, role } = user;
     const refreshToken = this.createRefreshToken(user);
+    const accessToken = this.createAccessToken(user);
     const update = await this.usersService.updateRefreshToken(
       _id,
       refreshToken,
     );
     if (!update) throw new BadRequestException(UserMessage.CANNOT_UPDATE_TOKEN);
-    const payload = {
-      sub: 'Token Login',
-      iss: 'From Server',
-      _id,
-      name,
-      email,
-      role,
-    };
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      maxAge: ms(
-        this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRE_IN') as string,
-      ),
+      maxAge:
+        ms(
+          this.configService.get<string>(
+            'JWT_REFRESH_TOKEN_EXPIRE_IN',
+          ) as string,
+        ) * 1000,
     });
     return {
       result: {
-        accessToken: this.jwtService.sign(payload),
+        accessToken,
         _id,
         name,
         email,
@@ -84,7 +80,7 @@ export class AuthService {
   createRefreshToken(user: IUser) {
     const { _id, name, email, role } = user;
     const payload = {
-      sub: 'Token Checkin',
+      sub: 'Refresh Token',
       iss: 'From Server',
       _id,
       name,
@@ -92,8 +88,53 @@ export class AuthService {
       role,
     };
     return this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET_KEY'),
+      privateKey: this.configService.get<string>(
+        'JWT_REFRESH_TOKEN_SECRET_KEY',
+      ),
       expiresIn: this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRE_IN'),
     });
+  }
+
+  createAccessToken(user: IUser) {
+    const { _id, name, email, role } = user;
+    const payload = {
+      sub: 'Access Token',
+      iss: 'From Server',
+      _id,
+      name,
+      email,
+      role,
+    };
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET_KEY'),
+      expiresIn: this.configService.get<string>('JWT_ACCESS_TOKEN_EXPIRE_IN'),
+    });
+  }
+
+  async handleRefreshToken(refreshToken: string) {
+    try {
+      const userVerify = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+      });
+      const user = (await this.usersService.findOne(userVerify._id)).result;
+      if (!user)
+        throw new BadRequestException(
+          UserMessage.TOKEN_IS_INVALID_OR_NOT_FOUND,
+        );
+      const { _id, name, email, role } = user;
+      const payload = { _id: _id.toString(), name, email, role };
+      return {
+        accessToken: this.createAccessToken(payload),
+        result: { _id, name, email, role },
+      };
+    } catch (error) {
+      throw new BadRequestException(UserMessage.REFRESH_TOKEN_IS_INVALID);
+    }
+  }
+
+  async logout(res: Response, user: IUser) {
+    res.clearCookie('refreshToken');
+    await this.usersService.updateRefreshToken(user._id, '');
+    return 'OK';
   }
 }

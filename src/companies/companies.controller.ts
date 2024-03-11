@@ -31,8 +31,8 @@ export class CompaniesController {
 
   @Get()
   async findAll(
-    @Query('page') page: string,
-    @Query('limit') limit: string,
+    @Query('current') page: string,
+    @Query('pageSize') limit: string,
     @Query() qs: string,
   ) {
     return await this.companiesService.findAll(+page, +limit, qs);

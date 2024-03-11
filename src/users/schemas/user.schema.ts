@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { UserVerifyStatus } from '../../constants/enums.constant';
+import { UserRole, UserVerifyStatus } from '../../constants/enums.constant';
 import { CompanyInfoDto, UserActionDto } from 'src/common/dto/user.dto';
 
 export type UserDocument = HydratedDocument<User>;
@@ -43,7 +43,7 @@ export class User {
   verifyStatus: UserVerifyStatus;
 
   @Prop()
-  role: UserVerifyStatus;
+  role: UserRole;
 
   @Prop({ type: Object })
   createdBy: UserActionDto;

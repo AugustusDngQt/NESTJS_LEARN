@@ -23,7 +23,10 @@ export class UsersService {
   async updateRefreshToken(_id: string, refreshToken: string) {
     return await this.userModel.updateOne(
       { _id },
-      { $set: { refreshToken }, $currentDate: { updatedAt: true } },
+      {
+        $set: { refreshToken: refreshToken !== '' ? refreshToken : null },
+        $currentDate: { updatedAt: true },
+      },
     );
   }
 
@@ -57,8 +60,8 @@ export class UsersService {
 
   async findAll(page: number, limit: number, qs: string) {
     const { filter, projection, population } = aqp(qs);
-    delete filter.page;
-    delete filter.limit;
+    delete filter.current;
+    delete filter.pageSize;
 
     // eslint-disable-next-line prefer-const
     let { sort }: any = aqp(qs);
@@ -87,15 +90,11 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    try {
-      if (!ObjectId.isValidObjectId(id))
-        throw new BadRequestException(CompanyMessage.ID_IS_INVALID);
-      return {
-        result: await this.userModel.findOne({ _id: id }, { password: 0 }),
-      };
-    } catch {
-      return 'Not found';
-    }
+    if (!ObjectId.isValidObjectId(id))
+      throw new BadRequestException(CompanyMessage.ID_IS_INVALID);
+    return {
+      result: await this.userModel.findOne({ _id: id }, { password: 0 }),
+    };
   }
 
   async findOneByUsername(username: string) {
