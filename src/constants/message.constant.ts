@@ -39,6 +39,7 @@ export const UserMessage = {
   PASSWORD_IS_NOT_STRONG_ENOUGH:
     'The password must be at least 8 characters long and contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol',
   ID_IS_INVALID: 'Id is invalid',
+  CANNOT_UPDATE_TOKEN: 'Cannot update token',
 };
 
 export const CompanyMessage = {

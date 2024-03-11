@@ -36,6 +36,9 @@ export class User {
   @Prop()
   verifyEmailToken: string;
 
+  @Prop()
+  refreshToken: string;
+
   @Prop({ default: UserVerifyStatus.Unverified })
   verifyStatus: UserVerifyStatus;
 

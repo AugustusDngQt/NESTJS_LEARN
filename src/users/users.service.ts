@@ -20,6 +20,13 @@ export class UsersService {
     @InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>,
   ) {}
 
+  async updateRefreshToken(_id: string, refreshToken: string) {
+    return await this.userModel.updateOne(
+      { _id },
+      { $set: { refreshToken }, $currentDate: { updatedAt: true } },
+    );
+  }
+
   isValidPassword(password: string, hash: string) {
     return bcrypt.compareSync(password, hash);
   }
