@@ -61,3 +61,31 @@ export const CompanyMessage = {
   CREATE_COMPANY_IS_SUCCESS: 'Create company is success',
   DELETE_COMPANY_IS_SUCCESS: 'Delete company is success',
 };
+
+export const JobMessage = {
+  TITLE_OF_JOB_MUST_BE_STRING: 'Title of job must be string',
+  TITLE_LENGTH_MUST_BE_FROM_10_TO_50_CHARACTERS:
+    'Title length must be from 10 to 50 characters',
+  SKILLS_MUST_BE_ARRAY: 'Skills must be array',
+  SKILLS_MUST_BE_ARRAY_WITH_MINIMUM_1_ITEM:
+    'Skills must be array with minimum 1 item',
+  SKILL_MUST_BE_STRING: 'Skill must be string',
+  SKILL_LENGTH_MUST_BE_FROM_2_TO_30_CHARACTERS:
+    'Skill length must be from 2 to 30 characters',
+  LOCATION_OF_JOB_MUST_BE_STRING: 'Location of job must be string',
+  LOCATION_LENGTH_MUST_BE_FROM_20_TO_100_CHARACTERS:
+    'Location length must be from 20 to 100 characters',
+  LEVEL_OF_JOB_MUST_BE_STRING: 'Level of job must be string',
+  LEVEL_LENGTH_MUST_BE_FROM_2_TO_30_CHARACTERS:
+    'Level length must be from 2 to 30 characters',
+  SALARY_MUST_BE_GREATER_THAN_0: 'Salary must be greater than 0',
+  QUANTITY_MUST_BE_GREATER_THAN_0: 'Quantity must be greater than 0',
+  START_DATE_IS_INVALID: 'Start date is invalid',
+  END_DATE_IS_INVALID: 'End date is invalid',
+  DESCRIPTION_MUST_BE_STRING: 'Description must be string',
+  DESCRIPTION_LENGTH_MUST_BE_FROM_20_TO_200_CHARACTERS:
+    'Description length must be from 20 to 200 characters',
+  CREATE_JOB_IS_SUCCESS: 'Create job is success',
+  JOB_NOT_FOUND: 'Job not found',
+  UPDATE_JOB_IS_SUCCESS: 'Update job is success',
+};

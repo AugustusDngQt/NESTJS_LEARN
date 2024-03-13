@@ -35,7 +35,7 @@ export class CompaniesService {
     delete filter.pageSize;
 
     // eslint-disable-next-line prefer-const
-    let { sort }: any = aqp(qs);
+    const { sort }: any = aqp(qs);
     // sort dùng cho các điều kiện về sắp xếp dữ liệu
     // projection là đối tượng các trường được cần hay loại trừ
     // population dùng cho các logic như gộp...

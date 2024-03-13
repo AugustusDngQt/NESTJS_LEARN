@@ -1,49 +1,42 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { UserRole, UserVerifyStatus } from '../../constants/enums.constant';
 import { CompanyInfoDto, UserActionDto } from 'src/common/dto/user.dto';
 
-export type UserDocument = HydratedDocument<User>;
+export type JobDocument = HydratedDocument<Job>;
 @Schema({ timestamps: true })
-export class User {
+export class Job {
   @Prop({ required: true })
-  name: string;
+  title: string;
 
   @Prop({ required: true })
-  dateOfBirth: Date;
+  skills: string[];
 
-  @Prop({ required: true, unique: true })
-  email: string;
+  @Prop({ required: true })
+  location: string;
+
+  @Prop({ required: true })
+  salary: number;
+
+  @Prop({ required: true })
+  quantity: number;
+
+  @Prop({ required: true })
+  level: string;
 
   @Prop()
-  phoneNumber: string;
-
-  @Prop({ required: true })
-  password: string;
+  description?: string;
 
   @Prop()
-  address: string;
+  startDate: Date;
+
+  @Prop()
+  endDate: Date;
+
+  @Prop({ default: false })
+  isActive: boolean;
 
   @Prop({ type: Object })
   company: CompanyInfoDto;
-
-  @Prop({ required: true })
-  gender: string;
-
-  @Prop()
-  forgotPasswordToken: string;
-
-  @Prop()
-  verifyEmailToken: string;
-
-  @Prop()
-  refreshToken: string;
-
-  @Prop({ default: UserVerifyStatus.Unverified })
-  verifyStatus: UserVerifyStatus;
-
-  @Prop()
-  role: UserRole;
 
   @Prop({ type: Object })
   createdBy: UserActionDto;
@@ -67,4 +60,4 @@ export class User {
   updatedAt: Date;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const JobSchema = SchemaFactory.createForClass(Job);
