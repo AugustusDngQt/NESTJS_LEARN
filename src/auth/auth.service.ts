@@ -105,10 +105,7 @@ export class AuthService {
       email,
       role,
     };
-    return this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET_KEY'),
-      expiresIn: this.configService.get<string>('JWT_ACCESS_TOKEN_EXPIRE_IN'),
-    });
+    return this.jwtService.sign(payload);
   }
 
   async handleRefreshToken(refreshToken: string) {
